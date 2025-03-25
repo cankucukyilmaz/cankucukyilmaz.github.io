@@ -1,0 +1,342 @@
+body, html {
+    background-color: rgb(32, 32, 32);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.monitor {
+    width: 80vw;
+    height: 70vh;
+    background-color: black;
+    border-radius: 10px 10px 10px 10px;
+    position: relative;
+    margin-bottom: 0;
+}
+
+.screen {
+    width: 98%;
+    height: 97%;
+    background-color: #111;
+    background-image: url('src/background.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#open-terminal-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.terminal-icon {
+    width: 48px;
+    height: 48px;
+}
+
+#terminal-window {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 80%;
+    height: 70%;
+    min-width: 300px; /* Minimum width to maintain usability */
+    min-height: 200px; /* Minimum height to maintain usability */
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 5;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    resize: none;
+    overflow: hidden;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #333;
+    cursor: se-resize;
+    z-index: 20;
+}
+
+.resize-handle:hover {
+    background-color: #555;
+}
+
+#terminal-window:not(.hidden) {
+    z-index: 15;
+}
+
+#terminal-window.maximized {
+    width: 98% !important; /* Slightly less than 100% to account for screen padding */
+    height: 97% !important;
+    top: 1.5% !important;
+    left: 1% !important;
+    border-radius: 5px !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.title-bar {
+    width: 100%;
+    height: 30px;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    cursor: move;
+}
+
+.title-bar-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.title-bar-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.close {
+    background-color: #ff5f56;
+}
+
+.minimize {
+    background-color: #ffbd2e;
+}
+
+.expand {
+    background-color: #27c93f;
+}
+
+.title {
+    flex-grow: 1;
+    text-align: center;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.terminal {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.output {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.output-line {
+    white-space: pre;
+    line-height: 1.1;
+}
+
+.input-area {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    margin-right: 5px;
+    color: #00ff00;
+}
+
+#terminal-input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    color: #00ff00;
+    outline: none;
+    font-family: 'Courier New', monospace;
+}
+
+.contact-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+    justify-content: flex-start; /* Changed from center to flex-start */
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 15px 10px 40px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: monospace;
+    font-size: 14px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+    color: white !important;
+    width: 140px;
+    height: 36px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.contact-btn i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    width: 16px;
+    text-align: center;
+}
+
+.contact-btn span {
+    display: inline-block;
+    width: calc(100% - 25px);
+    text-align: center;
+    margin-left: 25px; /* Push text to center accounting for icon */
+}
+
+/* Remove transform on hover */
+.contact-btn:hover {
+    transform: none;
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background change */
+}
+
+.github {
+    background-color: #24292e;
+    border: 1px solid #444;
+}
+.github:hover {
+    background-color: #2d3338;
+}
+
+.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border: 1px solid #c13584;
+}
+.instagram:hover {
+    background: linear-gradient(45deg, #f9a866, #eb7f5e, #e04b6e, #d4367b, #c62294);
+}
+
+.leetcode {
+    background-color: #ffa116;
+    border: 1px solid #ffa116;
+}
+.leetcode:hover {
+    background-color: #ffb445;
+}
+
+.linkedin {
+    background-color: #0077b5;
+    border: 1px solid #0077b5;
+}
+.linkedin:hover {
+    background-color: #0088cc;
+}
+
+/* Platform-specific colors */
+.github {
+    background-color: #24292e;
+    border: 1px solid #444;
+}
+
+.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border: 1px solid #c13584;
+}
+
+.leetcode {
+    background-color: #ffa116;
+    border: 1px solid #ffa116;
+}
+
+.linkedin {
+    background-color: #0077b5;
+    border: 1px solid #0077b5;
+}
+
+.contact-note {
+    font-size: 12px;
+    color: #00aa00;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Scrollbar styles */
+#terminal-window::-webkit-resizer {
+    background-color: #333;
+}
+
+.terminal .output::-webkit-scrollbar {
+    width: 12px;
+}
+
+.terminal .output::-webkit-scrollbar-track {
+    background: black;
+    border-radius: 6px;
+}
+
+.terminal .output::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 6px;
+    border: 3px solid black;
+}
+
+.terminal .output::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.terminal .output {
+    scrollbar-width: thin;
+    scrollbar-color: #333 black;
+}
+
+/* STAND - FORCED WHITE */
+.stand {
+    width: 8vw;
+    height: 5vh;
+    background-color: #e0e0e0 !important; /* Force white color */
+    position: relative;
+    margin-top: -1px;
+    z-index: 2; /* Ensure visibility */
+    border: 1px solid #ccc; /* Makes edges clearer */
+}
+
+/* BASE - FORCED WHITE */
+.base {
+    width: 22vw;
+    height: 3vh;
+    background-color: #f5f5f5 !important; /* Force white color */
+    border-radius: 15px 15px 0 0;
+    z-index: 1;
+}
