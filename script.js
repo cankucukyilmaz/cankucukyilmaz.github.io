@@ -152,12 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     terminalInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            const command = terminalInput.value.trim();
+            const command = terminalInput.value.trim().toLowerCase(); // Convert to lowercase here
             terminalInput.value = '';
-
+    
             if (command) {
                 addOutput(command, true);
-
+    
                 if (command === 'help') {
                     addOutput("Available commands:");
                     addOutput("help - Show available commands");
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        addOutput("✓ CV download started. Check your downloads folder.", false);
+                        addOutput("вњ“ CV download started. Check your downloads folder.", false);
                     }, 800); // Small delay for better UX
                 } else {
                     addOutput(`Command not found: ${command}`);
