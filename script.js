@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        addOutput("вњ“ CV download started. Check your downloads folder.", false);
+                        addOutput("✓ CV download started. Check your downloads folder.", false);
                     }, 800); // Small delay for better UX
                 } else {
                     addOutput(`Command not found: ${command}`);
