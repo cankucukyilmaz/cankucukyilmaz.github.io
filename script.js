@@ -102,16 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     expandButton.addEventListener('click', () => {
         if (isMaximized) {
+            // Restore to original size
             terminalWindow.style.width = originalSize.width;
             terminalWindow.style.height = originalSize.height;
             terminalWindow.style.top = originalSize.top;
             terminalWindow.style.left = originalSize.left;
             terminalWindow.classList.remove('maximized');
         } else {
-            terminalWindow.style.width = '100%';
-            terminalWindow.style.height = '100%';
-            terminalWindow.style.top = '0';
-            terminalWindow.style.left = '0';
+            // Save original size before maximizing
+            originalSize = {
+                width: terminalWindow.style.width,
+                height: terminalWindow.style.height,
+                top: terminalWindow.style.top,
+                left: terminalWindow.style.left
+            };
+            
+            // Maximize to fill most of screen
+            terminalWindow.style.width = '98%';
+            terminalWindow.style.height = '97%';
+            terminalWindow.style.top = '1.5%';
+            terminalWindow.style.left = '1%';
             terminalWindow.classList.add('maximized');
         }
         isMaximized = !isMaximized;
@@ -174,16 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     contactButtons.className = 'contact-buttons';
                     contactButtons.innerHTML = `
                         <a href="https://github.com/cankucukyilmaz" target="_blank" class="contact-btn github">
-                            <i class="fab fa-github"></i> GitHub
+                            <i class="fab fa-github"></i> <span> GitHub </span>
                         </a>
                         <a href="https://www.instagram.com/kucukyilmaz.can/" target="_blank" class="contact-btn instagram">
-                            <i class="fab fa-instagram"></i> Instagram
+                            <i class="fab fa-instagram"></i> <span> Instagram</span>
                         </a>
                         <a href="https://leetcode.com/u/canthecomputerscientist/" target="_blank" class="contact-btn leetcode">
-                            <i class="fas fa-code"></i> LeetCode
+                            <i class="fas fa-code"></i> <span> LeetCode</span>
                         </a>
                         <a href="https://www.linkedin.com/in/can-kucukyilmaz/" target="_blank" class="contact-btn linkedin">
-                            <i class="fab fa-linkedin"></i> LinkedIn
+                            <i class="fab fa-linkedin"></i> <span> LinkedIn </span>
                         </a>
                     `;
                     const contactContainer = document.createElement('div');
@@ -235,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const minWidth = 300;
             const minHeight = 200;
             
-            // Calculate new dimensions
+            // Calculate new width based on mouse movement
             let newWidth = startWidth + (e.clientX - startX);
             let newHeight = startHeight + (e.clientY - startY);
     
@@ -243,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newWidth = Math.max(minWidth, newWidth);
             newHeight = Math.max(minHeight, newHeight);
     
-            // Calculate maximum allowed dimensions based on current position
+            // Calculate maximum allowed dimensions
             const maxWidth = screenRect.width - windowRect.left;
             const maxHeight = screenRect.height - windowRect.top;
     
