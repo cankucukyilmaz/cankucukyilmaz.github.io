@@ -50,6 +50,11 @@ body, html {
     height: 48px;
 }
 
+.terminal::selection {
+    background-color: #00ff00; /* Greenish background color */
+    color: black;
+}
+
 #terminal-window {
     position: absolute;
     top: 5%;
