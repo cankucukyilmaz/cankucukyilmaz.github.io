@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DATA ---
     const poems = {
         "Yasamaya_Deger.txt": "Hayat belki de,\nBir bardak süttü.\nKırmızı oyuncak araba.\nKabuğu kopmuş diz yarası,\nDenizde sektirilen düz taş parçası.\nAlkışların koptuğu perde arası,\nAyrılık sonrası akan gözyaşı...",
-        "Ask.txt": "Gözlerim dans ediyor,\nGörmüyor musun?\nVücudum gevşiyor,\nHissetmiyor musun?\nGöğüslerinde uyumak istiyorum,\nAnlamıyor musun?\n___\nGerek kalmadı,\nGeç de olsa anladım.\nAşk acıtmaz,\nSadece gerçek değilsin.\nÖldüm ve yeniden doğdum,\nUmut ve Hayal Kırıklığı,\nSen ve Ben,\nArtık yok.",
+        "Ask.txt": "Gözlerim dans ediyor,\nGörmüyor musun?\n\nVücudum gevşiyor,\nHissetmiyor musun?\n\nGöğüslerinde uyumak istiyorum,\nAnlamıyor musun?\n___\n\nGerek kalmadı,\nGeç de olsa anladım.\n\nAşk acıtmaz,\nSadece gerçek değilsin.\n\nÖldüm ve yeniden doğdum,\nUmut ve Hayal Kırıklığı,\nSen ve Ben,\nArtık yok.",
     };
 
     const rootFiles = [
@@ -54,26 +54,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const addOutput = (message, isCommand = false) => {
-        if (typeof message === 'string') {
-            const lines = message.split('\n');
-            lines.forEach(lineText => {
+            if (typeof message === 'string') {
+                const lines = message.split('\n');
+                lines.forEach(lineText => {
+                    const line = document.createElement('div');
+                    line.className = isCommand ? 'command-line' : 'output-line';
+                    
+                    if (isCommand) {
+                        line.textContent = `user@portfolio:${currentDirectory}$ ${lineText}`;
+                    } else {
+                        // FIX: If lineText is empty, use a non-breaking space ('\u00A0')
+                        // This forces the div to have height even if the line is blank.
+                        line.textContent = lineText === '' ? '\u00A0' : lineText;
+                    }
+                    terminalOutput.appendChild(line);
+                });
+            } else {
                 const line = document.createElement('div');
                 line.className = isCommand ? 'command-line' : 'output-line';
-                if (isCommand) {
-                    line.textContent = `user@portfolio:${currentDirectory}$ ${lineText}`;
-                } else {
-                    line.textContent = lineText;
-                }
+                line.appendChild(message);
                 terminalOutput.appendChild(line);
-            });
-        } else {
-            const line = document.createElement('div');
-            line.className = isCommand ? 'command-line' : 'output-line';
-            line.appendChild(message);
-            terminalOutput.appendChild(line);
-        }
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    };
+            }
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        };
 
     const addGreetingOutput = (greeting) => {
         const lines = greeting.split('\n');
