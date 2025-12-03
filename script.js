@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA ---
     const poems = {
-        "Yaşamaya_Değer.txt": "Hayat belki de,\nBir bardak süttü.\nKırmızı oyuncak araba.\nKabuğu kopmuş diz yarası,\nDenizde sektirilen düz taş parçası.\nAlkışların koptuğu perde arası,\nAyrılık sonrası akan gözyaşı...",
-        "Aşk.txt": "Gözlerim dans ediyor,\nGörmüyor musun?\nVücudum gevşiyor,\nHissetmiyor musun?\nGöğüslerinde uyumak istiyorum,\nAnlamıyor musun?\n___\nGerek kalmadı,\nGeç de olsa anladım.\nAşk acıtmaz,\nSadece gerçek değilsin.\nÖldüm ve yeniden doğdum,\nUmut ve Hayal Kırıklığı,\nSen ve Ben,\nArtık yok.",
+        "Yasamaya_Deger.txt": "Hayat belki de,\nBir bardak süttü.\nKırmızı oyuncak araba.\nKabuğu kopmuş diz yarası,\nDenizde sektirilen düz taş parçası.\nAlkışların koptuğu perde arası,\nAyrılık sonrası akan gözyaşı...",
+        "Ask.txt": "Gözlerim dans ediyor,\nGörmüyor musun?\nVücudum gevşiyor,\nHissetmiyor musun?\nGöğüslerinde uyumak istiyorum,\nAnlamıyor musun?\n___\nGerek kalmadı,\nGeç de olsa anladım.\nAşk acıtmaz,\nSadece gerçek değilsin.\nÖldüm ve yeniden doğdum,\nUmut ve Hayal Kırıklığı,\nSen ve Ben,\nArtık yok.",
     };
 
     const rootFiles = [
