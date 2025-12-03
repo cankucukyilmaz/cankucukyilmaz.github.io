@@ -2,10 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminalInput = document.getElementById('terminal-input');
     const terminalOutput = document.querySelector('.terminal .output');
     const openTerminalBtn = document.getElementById('open-terminal-btn');
-    const terminalWindow = document.getElementById('terminal-window'); // Fixed ID (was 'temrinal-window')
+    const terminalWindow = document.getElementById('terminal-window');
     const closeButton = terminalWindow.querySelector('.close');
     const minimizeButton = terminalWindow.querySelector('.minimize');
     const expandButton = terminalWindow.querySelector('.expand');
+    const promptSpan = document.querySelector('.prompt');
+
     let isDragging = false;
     let offsetX, offsetY;
     let isMaximized = false;
@@ -14,6 +16,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastLoginTime = null;
     let isMinimized = false;
     let isFirstOpen = true;
+
+    // --- DIRECTORY STATE ---
+    let currentDirectory = '~';
+
+    // --- DATA ---
+    const poems = {
+        "Yaşamaya_Değer.txt": "Hayat belki de,\nBir bardak süttü.\nKırmızı oyuncak araba.\nKabuğu kopmuş diz yarası,\nDenizde sektirilen düz taş parçası.\nAlkışların koptuğu perde arası,\nAyrılık sonrası akan gözyaşı...",
+        "Aşk.txt": "Gözlerim dans ediyor,\nGörmüyor musun?\nVücudum gevşiyor,\nHissetmiyor musun?\nGöğüslerinde uyumak istiyorum,\nAnlamıyor musun?\n___\nGerek kalmadı,\nGeç de olsa anladım.\nAşk acıtmaz,\nSadece gerçek değilsin.\nÖldüm ve yeniden doğdum,\nUmut ve Hayal Kırıklığı,\nSen ve Ben,\nArtık yok.",
+    };
+
+    const rootFiles = [
+        "about.txt",
+        "projects.txt",
+        "contact.txt",
+        "cv.pdf",
+        "poems/" 
+    ];
 
     const greetingArt = `
  ██████╗ █████╗ ███╗   ██╗███████╗    ██████╗  ██████╗ ██████╗ ████████╗███████╗ ██████╗ ██╗     ██╗ ██████╗ 
@@ -41,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const line = document.createElement('div');
                 line.className = isCommand ? 'command-line' : 'output-line';
                 if (isCommand) {
-                    line.textContent = `user@portfolio:~$ ${lineText}`;
+                    line.textContent = `user@portfolio:${currentDirectory}$ ${lineText}`;
                 } else {
                     line.textContent = lineText;
                 }
@@ -69,6 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initializeTerminal = () => {
         terminalOutput.innerHTML = '';
+        currentDirectory = '~';
+        promptSpan.textContent = `user@portfolio:${currentDirectory}$`;
         displayLastLogin();
         displayGreeting();
         isFirstOpen = false;
@@ -102,22 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     expandButton.addEventListener('click', () => {
         if (isMaximized) {
-            // Restore to original size
             terminalWindow.style.width = originalSize.width;
             terminalWindow.style.height = originalSize.height;
             terminalWindow.style.top = originalSize.top;
             terminalWindow.style.left = originalSize.left;
             terminalWindow.classList.remove('maximized');
         } else {
-            // Save original size before maximizing
             originalSize = {
                 width: terminalWindow.style.width,
                 height: terminalWindow.style.height,
                 top: terminalWindow.style.top,
                 left: terminalWindow.style.left
             };
-            
-            // Maximize to fill most of screen
             terminalWindow.style.width = '98%';
             terminalWindow.style.height = '97%';
             terminalWindow.style.top = '1.5%';
@@ -144,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let newLeft = e.clientX - offsetX;
             let newTop = e.clientY - offsetY;
 
-            // Constrain to screen boundaries
             newLeft = Math.max(screenRect.left, Math.min(newLeft, screenRect.left + screenRect.width - windowRect.width));
             newTop = Math.max(screenRect.top, Math.min(newTop, screenRect.top + screenRect.height - windowRect.height));
 
@@ -160,65 +176,139 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- HELPER FOR CASE INSENSITIVE FILE FINDING ---
+    // This ensures "cat aşk.txt" finds "Aşk.txt"
+    const findPoemKey = (inputName) => {
+        return Object.keys(poems).find(key => key.toLowerCase() === inputName.toLowerCase());
+    };
+
+    // --- COMMAND INPUT HANDLER ---
     terminalInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            const command = terminalInput.value.trim().toLowerCase(); // Convert to lowercase here
+            const command = terminalInput.value.trim().toLowerCase();
             terminalInput.value = '';
-    
+
             if (command) {
                 addOutput(command, true);
-    
-                if (command === 'help') {
-                    addOutput("Available commands:");
-                    addOutput("help - Show available commands");
-                    addOutput("clear - Clear the terminal");
-                    addOutput("greeting - Show welcome art");
-                    addOutput("contact - Show contact information");
-                    addOutput("cv - Download my CV/Resume");
-                } else if (command === 'clear') {
-                    terminalOutput.innerHTML = '';
-                } else if (command === 'greeting') {
-                    addGreetingOutput(greetingArt);
-                } else if (command === 'contact') {
-                    const contactButtons = document.createElement('div');
-                    contactButtons.className = 'contact-buttons';
-                    contactButtons.innerHTML = `
-                        <a href="https://github.com/cankucukyilmaz" target="_blank" class="contact-btn github">
-                            <i class="fab fa-github"></i> <span> GitHub </span>
-                        </a>
-                        <a href="https://www.instagram.com/kucukyilmaz.can/" target="_blank" class="contact-btn instagram">
-                            <i class="fab fa-instagram"></i> <span> Instagram</span>
-                        </a>
-                        <a href="https://leetcode.com/u/canthecomputerscientist/" target="_blank" class="contact-btn leetcode">
-                            <i class="fas fa-code"></i> <span> LeetCode</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/can-kucukyilmaz/" target="_blank" class="contact-btn linkedin">
-                            <i class="fab fa-linkedin"></i> <span> LinkedIn </span>
-                        </a>
-                    `;
-                    const contactContainer = document.createElement('div');
-                    contactContainer.className = 'contact-info';
-                    addOutput("Here's how you can reach me:");
-                    addOutput(contactButtons);
-                } else if (command === 'cv') {
-                    addOutput("Preparing CV download...", false);
-                    setTimeout(() => {
-                        const link = document.createElement('a');
-                        link.href = 'src/CV_Can_Kucukyilmaz.pdf';
-                        link.download = 'Can_Kucukyilmaz.pdf';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        addOutput("✓ CV download started. Check your downloads folder.", false);
-                    }, 800); // Small delay for better UX
-                } else {
-                    addOutput(`Command not found: ${command}`);
+                
+                // === MODE 1: POEMS DIRECTORY ===
+                if (currentDirectory === '~/poems') {
+                    // Try to find if the user typed a poem name directly (e.g. "ask.txt")
+                    const directPoemKey = findPoemKey(command);
+
+                    if (command === 'ls') {
+                        addOutput("Available poems:");
+                        Object.keys(poems).forEach(title => {
+                            addOutput(`  ${title}`);
+                        });
+                    } 
+                    else if (command === 'cd ..' || command === 'cd' || command === 'cd ~') {
+                        currentDirectory = '~';
+                        promptSpan.textContent = `user@portfolio:${currentDirectory}$`;
+                        addOutput("Returned to home directory.");
+                    } 
+                    else if (command === 'help') {
+                        addOutput("Poem Directory Commands:");
+                        addOutput("  ls        - List available poems");
+                        addOutput("  cat [file]- Read a poem (e.g. 'cat Aşk.txt')");
+                        addOutput("  cd ..     - Go back to home");
+                    } 
+                    // Handle "cat filename"
+                    else if (command.startsWith('cat ')) {
+                        const fileName = command.replace('cat ', '').trim();
+                        const poemKey = findPoemKey(fileName);
+                        
+                        if (poemKey) {
+                            addOutput(`Reading ${poemKey}...`);
+                            addOutput("--------------------------");
+                            addOutput(poems[poemKey]);
+                            addOutput("--------------------------");
+                        } else {
+                            addOutput(`File not found: ${fileName}`);
+                        }
+                    }
+                    // Handle just typing the filename without 'cat'
+                    else if (directPoemKey) {
+                        addOutput(`Reading ${directPoemKey}...`);
+                        addOutput("--------------------------");
+                        addOutput(poems[directPoemKey]);
+                        addOutput("--------------------------");
+                    } 
+                    else {
+                        addOutput(`Command not found: ${command}`);
+                        addOutput(`Type 'ls' to see list, or 'cd ..' to exit.`);
+                    }
+                } 
+                
+                // === MODE 2: HOME DIRECTORY ===
+                else {
+                    if (command === 'help') {
+                        addOutput("Available commands:");
+                        addOutput("  ls       - List files and directories");
+                        addOutput("  cd poems - Enter poems directory");
+                        addOutput("  greeting - Show welcome art");
+                        addOutput("  contact  - Show contact information");
+                        addOutput("  cv       - Download my CV/Resume");
+                        addOutput("  clear    - Clear the terminal");
+                    } 
+                    else if (command === 'ls') {
+                        addOutput(`files: ${rootFiles.join('  ')}`);
+                    }
+                    else if (command === 'clear') {
+                        terminalOutput.innerHTML = '';
+                    } 
+                    else if (command === 'greeting') {
+                        addGreetingOutput(greetingArt);
+                    } 
+                    // Navigation to Poems
+                    else if (command === 'cd poems' || command === 'poems') {
+                        currentDirectory = '~/poems';
+                        promptSpan.textContent = `user@portfolio:${currentDirectory}$`;
+                        addOutput("Directory changed to ~/poems");
+                        addOutput("Type 'ls' to see my poems.");
+                        addOutput("Type 'cat [filename]' to read one.");
+                        addOutput("Type 'cd ..' to go back.");
+                    } 
+                    else if (command === 'contact') {
+                        const contactButtons = document.createElement('div');
+                        contactButtons.className = 'contact-buttons';
+                        contactButtons.innerHTML = `
+                            <a href="https://github.com/cankucukyilmaz" target="_blank" class="contact-btn github">
+                                <i class="fab fa-github"></i> <span> GitHub </span>
+                            </a>
+                            <a href="https://www.instagram.com/kucukyilmaz.can/" target="_blank" class="contact-btn instagram">
+                                <i class="fab fa-instagram"></i> <span> Instagram</span>
+                            </a>
+                            <a href="https://leetcode.com/u/canthecomputerscientist/" target="_blank" class="contact-btn leetcode">
+                                <i class="fas fa-code"></i> <span> LeetCode</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/can-kucukyilmaz/" target="_blank" class="contact-btn linkedin">
+                                <i class="fab fa-linkedin"></i> <span> LinkedIn </span>
+                            </a>
+                        `;
+                        addOutput("Here's how you can reach me:");
+                        addOutput(contactButtons);
+                    } 
+                    else if (command === 'cv') {
+                        addOutput("Preparing CV download...", false);
+                        setTimeout(() => {
+                            const link = document.createElement('a');
+                            link.href = 'src/CV_Can_Kucukyilmaz.pdf';
+                            link.download = 'Can_Kucukyilmaz.pdf';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            addOutput("✓ CV download started. Check your downloads folder.", false);
+                        }, 800);
+                    } 
+                    else {
+                        addOutput(`Command not found: ${command}`);
+                    }
                 }
             }
         }
     });
 
-    // Resize functionality
     const resizeHandle = document.createElement('div');
     resizeHandle.className = 'resize-handle';
     terminalWindow.appendChild(resizeHandle);
@@ -245,19 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const minWidth = 300;
             const minHeight = 200;
             
-            // Calculate new width based on mouse movement
             let newWidth = startWidth + (e.clientX - startX);
             let newHeight = startHeight + (e.clientY - startY);
     
-            // Apply minimum size constraints
             newWidth = Math.max(minWidth, newWidth);
             newHeight = Math.max(minHeight, newHeight);
-    
-            // Calculate maximum allowed dimensions
             const maxWidth = screenRect.width - windowRect.left;
             const maxHeight = screenRect.height - windowRect.top;
-    
-            // Constrain to screen boundaries
             newWidth = Math.min(newWidth, maxWidth);
             newHeight = Math.min(newHeight, maxHeight);
     
