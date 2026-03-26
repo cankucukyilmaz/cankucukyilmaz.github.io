@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMinimized = false;
     let isFirstOpen = true;
 
+    // --- COMMAND HISTORY ---
+    let commandHistory = [];
+    let historyIndex = -1;
+    let savedInput = '';
+
     // --- DIRECTORY STATE ---
     let currentDirectory = '~';
 
@@ -685,10 +690,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // COMMAND INPUT HANDLER
     // ================================================================
     terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (commandHistory.length === 0) return;
+            if (historyIndex === -1) {
+                savedInput = terminalInput.value;
+                historyIndex = commandHistory.length - 1;
+            } else if (historyIndex > 0) {
+                historyIndex--;
+            }
+            terminalInput.value = commandHistory[historyIndex];
+            setTimeout(() => terminalInput.setSelectionRange(terminalInput.value.length, terminalInput.value.length), 0);
+            return;
+        }
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (historyIndex === -1) return;
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                terminalInput.value = commandHistory[historyIndex];
+            } else {
+                historyIndex = -1;
+                terminalInput.value = savedInput;
+            }
+            setTimeout(() => terminalInput.setSelectionRange(terminalInput.value.length, terminalInput.value.length), 0);
+            return;
+        }
+
         if (e.key === 'Enter') {
             const rawInput = terminalInput.value.trim();
             const command = rawInput.toLowerCase();
             terminalInput.value = '';
+
+            if (rawInput && commandHistory[commandHistory.length - 1] !== rawInput) {
+                commandHistory.push(rawInput);
+            }
+            historyIndex = -1;
+            savedInput = '';
 
             if (rawInput) {
                 addOutput(rawInput, true);
